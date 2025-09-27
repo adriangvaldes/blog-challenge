@@ -4,16 +4,22 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+
+	"github.com/adriangvaldes/blog-challenge/handlers"
+	"github.com/gorilla/mux"
 )
 
 func main() {
-	http.HandleFunc("/", helloHandler)
+	r := mux.NewRouter()
 
-	fmt.Println("Starting server on :8080")
+	r.HandleFunc("/posts", handlers.CreatePost).Methods(http.MethodPost)
+	r.HandleFunc("/posts", handlers.GetPosts).Methods(http.MethodGet)
 
-	log.Fatal(http.ListenAndServe(":8080", nil))
-}
+	r.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+		fmt.Fprintln(w, "API do Blog está no ar!")
+	})
 
-func helloHandler(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprintln(w, "Hello, World!")
+	fmt.Println("Servidor escutando na porta 8080...")
+
+	log.Fatal(http.ListenAndServe(":8080", r))
 }
