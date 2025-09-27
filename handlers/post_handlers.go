@@ -28,6 +28,8 @@ func CreatePost(w http.ResponseWriter, r *http.Request) {
 	newPost.ID = int64(len(posts) + 1)
 	newPost.CreatedAt = time.Now()
 
+	posts = append(posts, newPost)
+
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusCreated)
 	json.NewEncoder(w).Encode(newPost)
