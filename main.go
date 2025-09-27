@@ -14,6 +14,7 @@ func main() {
 
 	r.HandleFunc("/posts", handlers.CreatePost).Methods(http.MethodPost)
 	r.HandleFunc("/posts", handlers.GetPosts).Methods(http.MethodGet)
+	r.HandleFunc("/posts/{id}", handlers.GetPost).Methods(http.MethodGet)
 
 	r.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		fmt.Fprintln(w, "API do Blog está no ar!")

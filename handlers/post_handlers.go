@@ -3,9 +3,11 @@ package handlers
 import (
 	"encoding/json"
 	"net/http"
+	"strconv"
 	"time"
 
 	"github.com/adriangvaldes/blog-challenge/models"
+	"github.com/gorilla/mux"
 )
 
 var posts = []models.Post{
@@ -33,4 +35,25 @@ func CreatePost(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusCreated)
 	json.NewEncoder(w).Encode(newPost)
+}
+
+func GetPost(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	idStr := vars["id"]
+
+	id, err := strconv.ParseInt(idStr, 10, 64)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	for _, post := range posts {
+		if post.ID == id {
+			w.Header().Set("Content-Type", "application/json")
+			json.NewEncoder(w).Encode(post)
+			return
+		}
+	}
+
+	http.Error(w, "Post não encontrado", http.StatusNotFound)
 }
